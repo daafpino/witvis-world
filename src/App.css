@@ -81,7 +81,17 @@ body, html, #root {
   align-items: center;
   z-index: 30;
 }
-
+.corner-button {
+  background: none;
+  border: none;
+  color: white;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-decoration-thickness: 5px;
+  text-underline-offset: 6px;
+}
 .about-content {
   background: #111;
   padding: 2rem;
@@ -118,7 +128,7 @@ body, html, #root {
   margin-top: 6rem;
   display: flex;
   justify-content: center;
-  gap: 1rem;
+  gap: 0rem;
   z-index: 3; /* 👈 input fields also above background */
 }
 
@@ -134,10 +144,57 @@ body, html, #root {
   outline: none;
 }
 
-.top-inputs input::placeholder {
+.input-bar input::placeholder {
   color: white;
-  opacity: 0.7;
+  opacity: 0.5; /* try 0.5 to 0.8 for soft but visible */
 }
+
+.input-bar {
+  position: absolute;
+  top: 4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  z-index: 10;
+}
+
+.input-bar input {
+  background-color: rgba(0, 0, 0, 0.5);
+  border: none;
+  border-radius: 10px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  color: white;
+  font-family: 'Aeonik', sans-serif;
+  font-weight: 700;
+  outline: none;
+  width: 190px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.input-bar input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.fish-wrapper {
+  position: relative;
+  margin: 0 -1.5rem; /* ⬅️ more aggressive negative margin */
+  z-index: 2;
+}
+
+.fish-icon {
+  height: 120px;
+  display: block;
+  position: relative;
+  top: 0px; /* ⬅️ moves the fish up over the inputs */
+}
+
+
+
 
 /* Backgrounds */
 .overlay {
@@ -177,10 +234,12 @@ body, html, #root {
 
 /* Main Content */
 .main-content {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  text-align: center;
 }
 
 .line {
@@ -188,22 +247,30 @@ body, html, #root {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  max-width: 90vw;
+  gap: 0.5rem;              /* ⬅️ slightly more spacing between words */
+  max-width: 1740px;         /* ⬅️ increase to delay line breaks */
+  width: 90vw;
   font-size: clamp(2rem, 6vw, 8vw);
+  line-height: 1.1;
   font-weight: bold;
   color: white;
   text-align: center;
-  animation: breathe 5s ease-in-out infinite;
   z-index: 1;
 }
 
+.line .underline {
+  text-decoration: underline;
+  text-decoration-thickness: 10px;
+  text-underline-offset: 10px;
+}
 .word {
   display: inline-block;
 }
 
 .underline {
   text-decoration: underline;
+  text-decoration-thickness: 1px; /* adjust as needed */
+  text-underline-offset: 4px; /* 👈 push underline lower */
 }
 
 /* Dropdowns */
@@ -290,22 +357,24 @@ body, html, #root {
 }
 
 .nav-button.left {
-  left: 1rem;
+  left: 2rem;
 }
 
 .nav-button.right {
-  right: 1rem;
+  right: 2rem;
 }
 
 /* Footer */
 .footer {
   text-align: center;
-  padding: 1rem;
+  padding: 1rem 0 0;
   font-size: 0.9rem;
   color: white;
   opacity: 0.6;
-  z-index: 5;
+  margin-top: 3rem; /* ⬅️ pushes it downward inside the modal */
 }
+
+
 
 /* Animations */
 @keyframes breathe {
@@ -329,4 +398,58 @@ body, html, #root {
     flex-direction: column;
     align-items: center;
   }
+}
+.corner {
+  position: absolute;
+  font-family: 'Aeonik', sans-serif;
+  font-size: 25px;
+  font-weight: 400;
+  color: white;
+  line-height: 1.15;
+  padding: 32px;
+  z-index: 10; /* ⬅️ bump z-index */
+}
+
+.corner a,
+.corner-button {
+  color: white;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
+
+.corner a:visited {
+  color: white;
+}
+
+.corner.top-left {
+  top: 0;
+  left: 0;
+}
+
+.corner.top-right {
+  top: 0;
+  right: 0;
+  text-align: right;
+}
+
+.corner.bottom-left {
+  bottom: 0;
+  left: 0;
+}
+
+.corner.bottom-right {
+  bottom: 0;
+  right: 0;
+  text-align: right;
+}
+
+.corner .bold {
+  font-weight: 700;
+}
+
+.nav-button svg {
+  display: block;
+  width: 72px;
+  height: 72px;
 }
