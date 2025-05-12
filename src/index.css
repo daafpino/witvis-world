@@ -11,3 +11,18 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.terms-list strong {
+  display: block;
+  font-size: 1.15rem; /* ⬆️ Slightly larger */
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.2rem; /* ⬇️ Closer to paragraph */
+  margin-top: 1rem;
+}
+
+.terms-list p {
+  font-size: 0.95rem;
+  color: #ccc;
+  margin: 0;
+  line-height: 1.45; /* ⬅️ Slightly tighter for compact look */
+}
