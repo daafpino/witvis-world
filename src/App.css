@@ -19,18 +19,35 @@ body, html, #root {
 }
 
 /* =============================
+   Global Link Styles
+============================= */
+a {
+  color: white;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  opacity: 0.8;
+}
+
+a:hover {
+  opacity: 1;
+}
+
+a:visited {
+  color: white;
+}
+
+/* =============================
    Top Corners & Navigation
 ============================= */
 .corner {
   position: absolute;
   font-family: 'Aeonik', sans-serif;
-  font-size: 1.25rem; /* 20px */
+  font-size: 1.25rem;
   font-weight: 400;
   color: white;
   line-height: 1.2;
   padding: 32px;
   z-index: 10;
-  text-decoration: none;
 }
 
 .corner a,
@@ -60,29 +77,10 @@ body, html, #root {
   font-weight: 700;
 }
 
-/* Positioning */
-.corner.top-left {
-  top: 0;
-  left: 0;
-}
-
-.corner.top-right {
-  top: 0;
-  right: 0;
-  text-align: right;
-}
-
-.corner.bottom-left {
-  bottom: 0;
-  left: 0;
-}
-
-.corner.bottom-right {
-  bottom: 0;
-  right: 0;
-  text-align: right;
-}
-
+.corner.top-left { top: 0; left: 0; }
+.corner.top-right { top: 0; right: 0; text-align: right; }
+.corner.bottom-left { bottom: 0; left: 0; }
+.corner.bottom-right { bottom: 0; right: 0; text-align: right; }
 
 /* =============================
    Main Line
@@ -102,14 +100,13 @@ body, html, #root {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  max-width: 1740px;
+  max-width: 1920px;
   width: 90vw;
-  font-size: clamp(2rem, 6vw, 8vw);
+  font-size: clamp(2rem, 4.5vw, 6vw);
   line-height: 1.1;
   font-weight: bold;
   color: white;
   text-align: center;
-  z-index: 1;
 }
 
 .line .underline {
@@ -120,12 +117,6 @@ body, html, #root {
 
 .word {
   display: inline-block;
-}
-
-.underline {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
 }
 
 /* =============================
@@ -177,7 +168,7 @@ body, html, #root {
 }
 
 /* =============================
-   Backgrounds
+   Background
 ============================= */
 .overlay {
   position: absolute;
@@ -206,70 +197,16 @@ body, html, #root {
   z-index: 0;
 }
 
-.background.loaded {
-  opacity: 1;
-}
-
-.background.fadeout {
-  opacity: 0;
-}
+.background.loaded { opacity: 1; }
+.background.fadeout { opacity: 0; }
 
 /* =============================
-   Dropdowns
-============================= */
-.dropdown {
-  position: relative;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-}
-
-.dropdown-wrapper {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 0.5rem;
-  z-index: 15;
-}
-
-.dropdown-content {
-  background: #FF0055;
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
-  display: flex;
-  flex-direction: column;
-  max-height: 30vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
-  transform-origin: top center;
-}
-
-.dropdown.open .dropdown-content:hover {
-  box-shadow: 0 8px 20px rgba(255, 0, 85, 0.5);
-  transform: scale(1.02);
-}
-
-.dropdown-item {
-  display: block;
-  padding: 0.5rem;
-  color: white;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-/* =============================
-   Overlays: About, Submit, Terms
+   Overlay Modals
 ============================= */
 .about-overlay,
 .submit-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.9);
   display: flex;
   justify-content: center;
@@ -277,8 +214,8 @@ body, html, #root {
   z-index: 30;
 }
 
-.about-content,
-.submit-content {
+.submit-content,
+.about-content {
   background: #111;
   padding: 2rem;
   border-radius: 8px;
@@ -288,39 +225,21 @@ body, html, #root {
   font-family: 'Aeonik', sans-serif;
 }
 
-.about-content h2,
-.submit-content h2 {
+.submit-content h2,
+.about-content h2 {
   margin-bottom: 1.5rem;
   font-size: 2rem;
   text-align: left;
 }
 
-.about-content p {
-  font-size: 1.2rem;
+.about-content p,
+.submit-content p {
+  font-size: 1.1rem;
   margin-bottom: 1rem;
   line-height: 1.5;
 }
-.about-content a {
-  color: white;
-  text-decoration: underline;
-  opacity: 0.8;
-}
 
-.about-content a:hover {
-  opacity: 1;
-}
-.about-content button {
-  background: #FF0055;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 2rem; /* 👈 Add this line */
-}
-
+.about-content button,
 .submit-actions button {
   background: #FF0055;
   color: white;
@@ -330,16 +249,23 @@ body, html, #root {
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
+  margin-top: 2rem;
 }
 
+.submit-actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 1rem;
+  margin-top: 3rem;
+}
 
 /* =============================
-   Submit Form
+   Submit Form Elements
 ============================= */
 .submit-content form {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* ⬅️ add this */
+  align-items: flex-start;
   gap: 1rem;
 }
 
@@ -368,33 +294,6 @@ body, html, #root {
   opacity: 0.6;
 }
 
-.upload-terms {
-  font-size: 0.85rem;
-  opacity: 0.9;
-  line-height: 1.5;
-  margin-top: 1.5rem;
-  padding-left: 1.5rem;
-}
-
-.upload-terms ul {
-  padding-left: 1.25rem;
-  margin: 0.5rem 0;
-}
-
-.upload-terms li {
-  margin-bottom: 0.4rem;
-}
-
-.checkbox-label {
-  display: flex;
-  align-items: center; /* align vertically */
-  justify-content: flex-start; /* align horizontally */
-  gap: 0.5rem;
-  color: white;
-  margin-top: 1rem;
-  padding-left: 0;
-}
-
 .checkbox-wrapper {
   display: flex;
   align-items: center;
@@ -402,7 +301,7 @@ body, html, #root {
   margin-top: 1rem;
   color: white;
   font-weight: bold;
-  padding-left: 0; /* remove extra indent */
+  padding-left: 0;
   justify-content: flex-start;
 }
 
@@ -424,15 +323,19 @@ body, html, #root {
   opacity: 1;
 }
 
-.submit-actions {
-  display: flex;
-  justify-content: flex-start;
-  gap: 1rem;
-  margin-top: 3rem;
+.terms-list ul,
+.upload-terms ul {
+  padding-left: 1.25rem;
+  margin: 0.5rem 0;
+}
+
+.terms-list li,
+.upload-terms li {
+  margin-bottom: 0.4rem;
 }
 
 /* =============================
-   Navigation Arrows & Footer
+   Arrows & Footer
 ============================= */
 .nav-button {
   position: absolute;
@@ -450,13 +353,8 @@ body, html, #root {
   transform: translateY(-50%) scale(1.2);
 }
 
-.nav-button.left {
-  left: 2rem;
-}
-
-.nav-button.right {
-  right: 2rem;
-}
+.nav-button.left { left: 2rem; }
+.nav-button.right { right: 2rem; }
 
 .nav-button svg {
   display: block;
@@ -473,31 +371,10 @@ body, html, #root {
   margin-top: 3rem;
 }
 
-
 /* =============================
    Animations
 ============================= */
-@keyframes breathe {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
-  100% { transform: translateY(0); }
-}
-
 @keyframes zoomIn {
   0% { transform: scale(1); }
   100% { transform: scale(1.05); }
-}
-
-/* =============================
-   Responsive
-============================= */
-@media (max-width: 600px) {
-  .App {
-    font-size: 10vw;
-  }
-
-  .top-inputs {
-    flex-direction: column;
-    align-items: center;
-  }
 }
