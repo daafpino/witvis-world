@@ -113,7 +113,58 @@ function App() {
     }, 8000);
     return () => clearInterval(interval);
   }, [handleNextManual]);
+    const handleUpload = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const file = form.image.files[0];
 
+    if (!file) {
+      alert('Please select an image.');
+      return;
+    }
+
+    const toBase64 = file => new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = reject;
+    });
+
+    const fileBase64 = await toBase64(file);
+
+    const payload = {
+      fileBase64,
+      fileName: file.name,
+      username: form.username.value,
+      email: form.email.value,
+      tags: form.tags.value,
+      location: form.location.value,
+    };
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        alert('Upload successful!');
+        form.reset();
+        setSubmitOpen(false);
+      } else {
+        alert('Upload failed: ' + result.error);
+      }
+
+    } catch (error) {
+      console.error(error);
+      alert('Something went wrong.');
+    }
+  };
   return (
     <div className="App">
       <div className="corner top-left">
@@ -177,11 +228,26 @@ function App() {
         <div className="submit-overlay">
           <div className="submit-content">
             <h2>Submit Your Photo</h2>
-            <form onSubmit={(e) => e.preventDefault()}>
-              <label>Your photo<input type="file" accept="image/*" required /></label>
-              <label>Theme<input type="text" placeholder="e.g. vibe, street, sky..." required /></label>
-              <label>Location<input type="text" placeholder="e.g. Tokyo, Lisbon..." required /></label>
-              <label>Your name (optional)<input type="text" placeholder="Your name" /></label>
+            <form id="hitvis-upload-form" onSubmit={handleUpload}>
+        <label>Your photo
+  <input type="file" accept="image/*" name="image" required />
+</label>
+
+<label>Theme
+  <input type="text" placeholder="e.g. vibe, street, sky..." name="tags" required />
+</label>
+
+<label>Location
+  <input type="text" placeholder="e.g. Tokyo, Lisbon..." name="location" required />
+</label>
+
+<label>Your name (optional)
+  <input type="text" placeholder="Your name" name="username" />
+</label>
+
+<label>Email
+  <input type="email" placeholder="you@example.com" name="email" required />
+</label>
               <div className="terms-list">
                 <p>By uploading a photo, you confirm that you:</p>
                 <ul>
@@ -205,7 +271,7 @@ function App() {
                 </button>
               </p>
               <div className="submit-actions">
-                <button type="submit" disabled>Submit (coming soon)</button>
+                <button type="submit">Submit</button>
                 <button type="button" onClick={() => setSubmitOpen(false)}>✕ Close</button>
               </div>
             </form>
