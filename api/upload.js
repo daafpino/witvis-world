@@ -44,18 +44,24 @@ module.exports = async function handler(req, res) {
     .map((tag) => tag.trim().toLowerCase())
     .filter(Boolean);
   const normalizedLocation = location.trim().toLowerCase();
+  const cleanFileName = fileName.trim().toLowerCase();
 
-  const checksum = `${safeUsername}|${cleanedTags.sort().join(",")}|${normalizedLocation}|${fileName}`;
+  // Create a normalized checksum
+  const checksum = `${safeUsername}|${cleanedTags.sort().join(",")}|${normalizedLocation}|${cleanFileName}`;
+  console.log("🔍 Calculated checksum:", checksum);
 
+  // Check for existing entry
   const { data: existing, error: fetchError } = await supabase
     .from("submissions")
-    .select("id")
+    .select("id, checksum")
     .eq("checksum", checksum);
 
   if (fetchError) {
     console.error("Supabase fetch error:", fetchError);
     return res.status(500).json({ error: "Database query failed" });
   }
+
+  console.log("🧾 Matching rows from Supabase:", existing);
 
   if (existing && existing.length > 0) {
     return res.status(409).json({
@@ -64,13 +70,15 @@ module.exports = async function handler(req, res) {
   }
 
   try {
+    // Upload to ImageKit
     const response = await imagekit.upload({
       file: fileBase64,
-      fileName,
+      fileName: cleanFileName,
       folder: `hitvis/uploads/${safeUsername}`,
       tags: cleanedTags
     });
 
+    // Insert metadata into Supabase
     const { error } = await supabase.from("submissions").insert([
       {
         imageUrl: response.url,
@@ -78,7 +86,7 @@ module.exports = async function handler(req, res) {
         email,
         tags: cleanedTags.join(","),
         location: normalizedLocation,
-        fileName,
+        fileName: cleanFileName,
         checksum
       }
     ]);
