@@ -39,6 +39,30 @@ export default async function handler(req, res) {
   }
 
   const safeUsername = username.replace(/[^a-z0-9_-]/gi, "").toLowerCase();
+  const cleanedTags = tags
+    .split(",")
+    .map((tag) => tag.trim().toLowerCase());
+  const normalizedLocation = location.trim().toLowerCase();
+
+  // Check for duplicates in Supabase
+  const { data: existing, error: fetchError } = await supabase
+    .from("submissions")
+    .select("id")
+    .eq("username", safeUsername)
+    .eq("tags", cleanedTags.join(","))
+    .eq("location", normalizedLocation)
+    .eq("fileName", fileName);
+
+  if (fetchError) {
+    console.error("Supabase fetch error:", fetchError);
+    return res.status(500).json({ error: "Database query failed" });
+  }
+
+  if (existing && existing.length > 0) {
+    return res.status(409).json({
+      error: "You've already submitted this image with the same tags and location."
+    });
+  }
 
   try {
     // Upload to ImageKit
@@ -46,7 +70,7 @@ export default async function handler(req, res) {
       file: fileBase64,
       fileName,
       folder: `hitvis/uploads/${safeUsername}`,
-      tags: tags.split(",").map((tag) => tag.trim())
+      tags: cleanedTags
     });
 
     // Insert metadata into Supabase
@@ -55,8 +79,9 @@ export default async function handler(req, res) {
         imageUrl: response.url,
         username: safeUsername,
         email,
-        tags,
-        location
+        tags: cleanedTags.join(","), // Store as comma-separated string
+        location: normalizedLocation,
+        fileName
         // uploadedAt is auto-filled by Supabase
       }
     ]);
