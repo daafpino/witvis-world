@@ -41,17 +41,18 @@ export default async function handler(req, res) {
   const safeUsername = username.replace(/[^a-z0-9_-]/gi, "").toLowerCase();
   const cleanedTags = tags
     .split(",")
-    .map((tag) => tag.trim().toLowerCase());
+    .map((tag) => tag.trim().toLowerCase())
+    .filter(Boolean); // remove empty tags
   const normalizedLocation = location.trim().toLowerCase();
 
-  // Check for duplicates in Supabase
+  // Create a checksum to detect duplicates
+  const checksum = `${safeUsername}|${cleanedTags.sort().join(",")}|${normalizedLocation}|${fileName}`;
+
+  // Check for duplicates
   const { data: existing, error: fetchError } = await supabase
     .from("submissions")
     .select("id")
-    .eq("username", safeUsername)
-    .eq("tags", cleanedTags.join(","))
-    .eq("location", normalizedLocation)
-    .eq("fileName", fileName);
+    .eq("checksum", checksum);
 
   if (fetchError) {
     console.error("Supabase fetch error:", fetchError);
@@ -80,21 +81,3 @@ export default async function handler(req, res) {
         username: safeUsername,
         email,
         tags: cleanedTags.join(","), // Store as comma-separated string
-        location: normalizedLocation,
-        fileName
-        // uploadedAt is auto-filled by Supabase
-      }
-    ]);
-
-    if (error) {
-      console.error("Supabase insert error:", error);
-      return res.status(500).json({ error: "Database insert failed" });
-    }
-
-    res.status(200).json({ success: true, imageUrl: response.url });
-
-  } catch (err) {
-    console.error("Upload error:", err.message, err);
-    res.status(500).json({ error: "Upload failed: " + err.message });
-  }
-}
