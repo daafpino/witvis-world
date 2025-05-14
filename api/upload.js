@@ -91,10 +91,18 @@ module.exports = async function handler(req, res) {
       }
     ]);
 
-    if (error) {
-      console.error("Supabase insert error:", error);
-      return res.status(500).json({ error: "Database insert failed" });
-    }
+if (error) {
+  if (error.code === "23505") {
+    // Unique constraint violation
+    return res.status(409).json({
+      error: "This image has already been submitted."
+    });
+  }
+
+  console.error("Supabase insert error:", error);
+  return res.status(500).json({ error: "Database insert failed" });
+}
+
 
     res.status(200).json({ success: true, imageUrl: response.url });
 
