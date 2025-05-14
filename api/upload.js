@@ -1,5 +1,5 @@
-import ImageKit from "imagekit";
-import { createClient } from "@supabase/supabase-js";
+const ImageKit = require("imagekit");
+const { createClient } = require("@supabase/supabase-js");
 
 export const config = {
   api: {
@@ -20,7 +20,7 @@ const supabase = createClient(
   process.env.SUPABASE_KEY
 );
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Only POST allowed" });
   }
@@ -42,13 +42,11 @@ export default async function handler(req, res) {
   const cleanedTags = tags
     .split(",")
     .map((tag) => tag.trim().toLowerCase())
-    .filter(Boolean); // remove empty tags
+    .filter(Boolean);
   const normalizedLocation = location.trim().toLowerCase();
 
-  // Create a checksum to detect duplicates
   const checksum = `${safeUsername}|${cleanedTags.sort().join(",")}|${normalizedLocation}|${fileName}`;
 
-  // Check for duplicates
   const { data: existing, error: fetchError } = await supabase
     .from("submissions")
     .select("id")
@@ -66,7 +64,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Upload to ImageKit
     const response = await imagekit.upload({
       file: fileBase64,
       fileName,
@@ -74,10 +71,27 @@ export default async function handler(req, res) {
       tags: cleanedTags
     });
 
-    // Insert metadata into Supabase
     const { error } = await supabase.from("submissions").insert([
       {
         imageUrl: response.url,
         username: safeUsername,
         email,
-        tags: cleanedTags.join(","), // Store as comma-separated string
+        tags: cleanedTags.join(","),
+        location: normalizedLocation,
+        fileName,
+        checksum
+      }
+    ]);
+
+    if (error) {
+      console.error("Supabase insert error:", error);
+      return res.status(500).json({ error: "Database insert failed" });
+    }
+
+    res.status(200).json({ success: true, imageUrl: response.url });
+
+  } catch (err) {
+    console.error("Upload error:", err.message, err);
+    res.status(500).json({ error: "Upload failed: " + err.message });
+  }
+};
