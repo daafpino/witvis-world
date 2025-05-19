@@ -23,6 +23,7 @@ function App() {
   const [images, setImages] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [transitioning, setTransitioning] = useState(false);
+  const [uploadMessage, setUploadMessage] = useState("");
   const currentTheme = customTheme.trim();
   const currentLocation = customLocation.trim();
   const handleRandomLocation = () => {
@@ -187,7 +188,9 @@ setImages([...userImages, ...pexelsPhotos]);
       const result = await res.json();
 
       if (result.success) {
-alert("✅ Thanks for your upload!\nYour image is being reviewed. If it’s approved, it will appear on hitvis.com — and we’ll let you know.");
+setUploadMessage("✅ Thanks for your upload! Your image is being reviewed. If it’s approved, it will appear on hitvis.com — and we’ll let you know.");
+// Optional: hide the message again after 8 seconds
+setTimeout(() => setUploadMessage(""), 8000);
         form.reset();
         setSubmitOpen(false);
       } else {
@@ -249,7 +252,11 @@ alert("✅ Thanks for your upload!\nYour image is being reviewed. If it’s appr
   </button>
 </div>
 
-
+{uploadMessage && (
+  <div className="upload-success-message">
+    {uploadMessage}
+  </div>
+)}
 
       {aboutOpen && (
         <div className="submit-overlay">
