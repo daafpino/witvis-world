@@ -25,14 +25,16 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: "Only POST allowed" });
   }
 
-  const {
-    fileBase64,
-    fileName,
-    username = "anonymous",
-    tags = "",
-    location = "",
-    email = ""
-  } = req.body;
+const {
+  fileBase64,
+  fileName,
+  username = "anonymous",
+  tags = "",
+  location = "",
+  email = "",
+  profileUrl = ""
+} = req.body;
+
 
   if (!fileBase64 || !fileName || !email || !tags) {
     return res.status(400).json({ error: "Missing required fields." });
@@ -70,16 +72,18 @@ module.exports = async function handler(req, res) {
     // Step 1: insert a placeholder row first (no imageUrl yet)
     const { data: insertData, error: insertError } = await supabase
       .from("submissions")
-      .insert([
-        {
-          username: safeUsername,
-          email,
-          tags: cleanedTags.join(","),
-          location: normalizedLocation,
-          fileName: cleanFileName,
-          checksum
-        }
-      ])
+.insert([
+  {
+    username: safeUsername,
+    email,
+    tags: cleanedTags.join(","),
+    location: normalizedLocation,
+    fileName: cleanFileName,
+    checksum,
+    profileUrl // ✅ new field!
+  }
+])
+
       .select("id")
       .single();
 
