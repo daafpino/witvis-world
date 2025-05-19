@@ -34,18 +34,30 @@ const fetchUserSubmissions = async () => {
   try {
     const res = await fetch('/api/submissions');
     const data = await res.json();
-    const formatted = data.map((item) => ({
+
+    const theme = currentTheme.toLowerCase();
+    const location = currentLocation.toLowerCase();
+
+    const filtered = data.filter((item) => {
+      const tagsMatch = item.tags?.toLowerCase().includes(theme);
+      const locationMatch = item.location?.toLowerCase().includes(location);
+      return tagsMatch || locationMatch;
+    });
+
+    const formatted = filtered.map((item) => ({
       url: item.imageUrl,
       photographer: item.username || "Anonymous",
       profileUrl: null,
       source: "Hitvis"
     }));
+
     return formatted;
   } catch (error) {
     console.error("Failed to fetch user submissions", error);
     return [];
   }
 };
+
 
 
   const fetchImages = useCallback(async () => {
