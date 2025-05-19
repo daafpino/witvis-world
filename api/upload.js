@@ -25,16 +25,16 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: "Only POST allowed" });
   }
 
-const {
-  fileBase64,
-  fileName,
-  username = "anonymous",
-  tags = "",
-  location = "",
-  email = "",
-  profileUrl = ""
-} = req.body;
-
+  const {
+    fileBase64,
+    fileName,
+    username = "anonymous",
+    displayName = "",
+    tags = "",
+    location = "",
+    email = "",
+    profileUrl = ""
+  } = req.body;
 
   if (!fileBase64 || !fileName || !email || !tags) {
     return res.status(400).json({ error: "Missing required fields." });
@@ -68,34 +68,35 @@ const {
     });
   }
 
-try {
-  // Step 1: insert a placeholder row first (no imageUrl yet)
-  console.log("🧾 Inserting submission with:", {
-    username: safeUsername,
-    email,
-    tags: cleanedTags.join(","),
-    location: normalizedLocation,
-    fileName: cleanFileName,
-    checksum,
-    profileUrl
-  });
+  try {
+    // Step 1: insert a placeholder row first (no imageUrl yet)
+    console.log("🧾 Inserting submission with:", {
+      username: safeUsername,
+      displayName,
+      email,
+      tags: cleanedTags.join(","),
+      location: normalizedLocation,
+      fileName: cleanFileName,
+      checksum,
+      profileUrl
+    });
 
-  const { data: insertData, error: insertError } = await supabase
-    .from("submissions")
-    .insert([
-      {
-        username: safeUsername,
-        email,
-        tags: cleanedTags.join(","),
-        location: normalizedLocation,
-        fileName: cleanFileName,
-        checksum,
-        profileUrl
-      }
-    ])
-
-  .select("id")
-  .single();
+    const { data: insertData, error: insertError } = await supabase
+      .from("submissions")
+      .insert([
+        {
+          username: safeUsername,
+          displayName,
+          email,
+          tags: cleanedTags.join(","),
+          location: normalizedLocation,
+          fileName: cleanFileName,
+          checksum,
+          profileUrl
+        }
+      ])
+      .select("id")
+      .single();
 
     if (insertError) {
       if (insertError.code === "23505") {
@@ -128,7 +129,6 @@ try {
     }
 
     res.status(200).json({ success: true, imageUrl: response.url });
-
   } catch (err) {
     console.error("Upload error:", err.message, err);
     return res.status(500).json({ error: "Upload failed: " + err.message });
