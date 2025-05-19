@@ -171,6 +171,7 @@ setImages([...userImages, ...pexelsPhotos]);
       email: form.email.value,
       tags: form.tags.value,
       location: form.location.value,
+      profileUrl: form.profileUrl.value,
     };
 
     try {
@@ -279,6 +280,10 @@ setImages([...userImages, ...pexelsPhotos]);
 
 <label>Your name (optional)
   <input type="text" placeholder="Your name" name="username" />
+</label>
+
+<label>Photographer website (optional)
+  <input type="url" placeholder="https://yourportfolio.com" name="profileUrl" />
 </label>
 
 <label>Email
