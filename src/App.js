@@ -195,7 +195,7 @@ setImages([...userImages, ...pexelsPhotos]);
 
     } catch (error) {
       console.error(error);
-      alert('Something went wrong.');
+        alert('Something went wrong:\n' + error.message);
     }
   };
   return (
