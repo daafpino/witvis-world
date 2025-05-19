@@ -46,7 +46,7 @@ const fetchUserSubmissions = async () => {
 
     const mapped = filtered.map(item => ({
       url: item.imageUrl,
-      photographer: item.username || "anonymous",
+photographer: item.displayName || item.username || "anonymous",
       profileUrl: item.profileUrl || "", // ✅ fix here
       source: "Hitvis"
     }));
