@@ -68,21 +68,32 @@ const {
     });
   }
 
-  try {
-    // Step 1: insert a placeholder row first (no imageUrl yet)
-const { data: insertData, error: insertError } = await supabase
-  .from("submissions")
-  .insert([
-    {
-      username: safeUsername,
-      email,
-      tags: cleanedTags.join(","),
-      location: normalizedLocation,
-      fileName: cleanFileName,
-      checksum,
-      profileUrl // ✅ this line adds the link to the DB
-    }
-  ])
+try {
+  // Step 1: insert a placeholder row first (no imageUrl yet)
+  console.log("🧾 Inserting submission with:", {
+    username: safeUsername,
+    email,
+    tags: cleanedTags.join(","),
+    location: normalizedLocation,
+    fileName: cleanFileName,
+    checksum,
+    profileUrl
+  });
+
+  const { data: insertData, error: insertError } = await supabase
+    .from("submissions")
+    .insert([
+      {
+        username: safeUsername,
+        email,
+        tags: cleanedTags.join(","),
+        location: normalizedLocation,
+        fileName: cleanFileName,
+        checksum,
+        profileUrl
+      }
+    ])
+
   .select("id")
   .single();
 
