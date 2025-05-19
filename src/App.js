@@ -41,8 +41,23 @@ const fetchUserSubmissions = async () => {
     const filtered = data.filter((item) => {
       const tagsMatch = item.tags?.toLowerCase().includes(theme);
       const locationMatch = item.location?.toLowerCase().includes(location);
-return tagsMatch && locationMatch;
+      return tagsMatch && locationMatch;
     });
+
+    const mapped = filtered.map(item => ({
+      url: item.imageUrl,
+      photographer: item.username || "anonymous",
+      profileUrl: item.profileUrl || "", // ✅ fix here
+      source: "Hitvis"
+    }));
+
+    return mapped;
+  } catch (e) {
+    console.error("Error fetching user submissions:", e);
+    return [];
+  }
+};
+
 
     const formatted = filtered.map((item) => ({
       url: item.imageUrl,
