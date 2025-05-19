@@ -29,7 +29,28 @@ function App() {
     const randomIndex = Math.floor(Math.random() * defaultLocations.length);
     setCustomLocation(defaultLocations[randomIndex]);
   };
+  
+const fetchUserSubmissions = async () => {
+  try {
+    const res = await fetch('/api/submissions');
+    const data = await res.json();
+    const formatted = data.map((item) => ({
+      url: item.imageUrl,
+      photographer: item.username || "Anonymous",
+      profileUrl: null,
+      source: "Hitvis"
+    }));
+    return formatted;
+  } catch (error) {
+    console.error("Failed to fetch user submissions", error);
+    return [];
+  }
+};
+
+
   const fetchImages = useCallback(async () => {
+    const userImages = await fetchUserSubmissions();
+
     const query = `${currentTheme}, ${currentLocation}`;
   
     try {
@@ -47,7 +68,7 @@ function App() {
       }));
   
       if (fetchedImages.length > 0) {
-        setImages(fetchedImages);
+setImages([...userImages, ...fetchedImages]);
         setCurrentImageIndex(0);
         return;
       }
@@ -73,7 +94,7 @@ function App() {
       }));
   
       if (pexelsPhotos.length > 0) {
-        setImages(pexelsPhotos);
+setImages([...userImages, ...pexelsPhotos]);
         setCurrentImageIndex(0);
       }
     } catch (pexelsError) {
