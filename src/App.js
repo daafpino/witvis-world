@@ -187,7 +187,7 @@ setImages([...userImages, ...pexelsPhotos]);
       const result = await res.json();
 
       if (result.success) {
-        alert('Upload successful!');
+alert("✅ Thanks for your upload!\nYour image is being reviewed. If it’s approved, it will appear on hitvis.com — and we’ll let you know.");
         form.reset();
         setSubmitOpen(false);
       } else {
