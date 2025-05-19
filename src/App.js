@@ -212,23 +212,28 @@ setImages([...userImages, ...pexelsPhotos]);
       </div>
      {/* Bottom Left – Credits */}
 <div className="corner bottom-left">
-  {images.length > 0 ? (
-    images[currentImageIndex]?.profileUrl ? (
-      <a
-        className="underline"
-        href={images[currentImageIndex].profileUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Photo by {images[currentImageIndex].photographer} on {images[currentImageIndex].source}
-      </a>
-    ) : (
-      <span className="underline">
-        Photo by {images[currentImageIndex].photographer} on {images[currentImageIndex].source}
-      </span>
-    )
-  ) : null}
+  {images.length > 0 && (
+    <>
+      {images[currentImageIndex]?.profileUrl?.trim() ? (
+        <a
+          className="underline"
+          href={images[currentImageIndex].profileUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Photo by {images[currentImageIndex].photographer}
+          {images[currentImageIndex].source ? ` on ${images[currentImageIndex].source}` : ""}
+        </a>
+      ) : (
+        <span className="underline">
+          Photo by {images[currentImageIndex].photographer}
+          {images[currentImageIndex].source ? ` on ${images[currentImageIndex].source}` : ""}
+        </span>
+      )}
+    </>
+  )}
 </div>
+
 
 {/* Bottom Right – Submit Button */}
 <div className="corner bottom-right">
