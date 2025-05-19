@@ -1,4 +1,6 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, startTransition } from "react";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';  // Correct imports for Routes and Route
+import AdminPanel from './AdminPanel';  // Import AdminPanel for admin route
 import "./App.css";
 import { ReactComponent as ArrowLeft } from "./assets/ArrowLeft.svg";
 import { ReactComponent as ArrowRight } from "./assets/ArrowRight.svg";
@@ -21,15 +23,12 @@ function App() {
   const [images, setImages] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [transitioning, setTransitioning] = useState(false);
-
   const currentTheme = customTheme.trim();
   const currentLocation = customLocation.trim();
-
   const handleRandomLocation = () => {
     const randomIndex = Math.floor(Math.random() * defaultLocations.length);
     setCustomLocation(defaultLocations[randomIndex]);
   };
-
   const fetchImages = useCallback(async () => {
     const query = `${currentTheme}, ${currentLocation}`;
   
@@ -166,7 +165,11 @@ function App() {
     }
   };
   return (
-    <div className="App">
+    <Router> {/* Wrap everything in Router */}
+      <div className="App">
+        <Routes> {/* Use Routes instead of Switch */}
+          <Route path="/" element={(
+            <div>
       <div className="corner top-left">
         <span className="bold">Hitvis</span>&nbsp;– Feel the vibe before you arrive
       </div>
@@ -348,7 +351,15 @@ function App() {
       <button className="nav-button right" onClick={handleNextManual} aria-label="Next image">
         <ArrowRight />
       </button>
-    </div>
+
+            </div>
+          )} />
+
+          {/* Admin Panel route */}
+<Route path="/admin" element={<div style={{ padding: '2rem' }}><h1>✅ Admin route works!</h1></div>} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
