@@ -356,7 +356,7 @@ function App() {
           )} />
 
           {/* Admin Panel route */}
-<Route path="/admin" element={<div style={{ padding: '2rem' }}><h1>✅ Admin route works!</h1></div>} />
+<Route path="/admin" element={<AdminPanel />} />
         </Routes>
       </div>
     </Router>
