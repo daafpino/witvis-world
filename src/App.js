@@ -59,21 +59,6 @@ const fetchUserSubmissions = async () => {
 };
 
 
-const formatted = filtered.map((item) => ({
-  url: item.imageUrl,
-  photographer: item.username || "Anonymous",
-  profileUrl: item.profileUrl || "", // ✅ fix here
-  source: "Hitvis"
-}));
-
-return formatted;
-  } catch (error) {
-    console.error("Failed to fetch user submissions", error);
-    return [];
-  }
-};
-
-
 
   const fetchImages = useCallback(async () => {
     const userImages = await fetchUserSubmissions();
