@@ -41,7 +41,7 @@ const fetchUserSubmissions = async () => {
     const filtered = data.filter((item) => {
       const tagsMatch = item.tags?.toLowerCase().includes(theme);
       const locationMatch = item.location?.toLowerCase().includes(location);
-      return tagsMatch || locationMatch;
+return tagsMatch && locationMatch;
     });
 
     const formatted = filtered.map((item) => ({
