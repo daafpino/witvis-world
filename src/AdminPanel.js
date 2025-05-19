@@ -1,14 +1,25 @@
 // AdminPanel.js
 import React, { useState, useEffect } from 'react';
-import supabase from './supabaseClient'; // Make sure to import supabase client
+import supabase from './supabaseClient';
 
 const AdminPanel = () => {
-  console.log("👀 AdminPanel rendered"); // ✅ Add this line
+  console.log("👀 AdminPanel rendered");
+
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [passwordInput, setPasswordInput] = useState('');
   const [submissions, setSubmissions] = useState([]);
 
-  
+  const PASSWORD = "maui"; // 🔒 Change this to your real password
+
   useEffect(() => {
-    // Fetch unapproved submissions
+    if (passwordInput === PASSWORD) {
+      setIsAuthorized(true);
+    }
+  }, [passwordInput]);
+
+  useEffect(() => {
+    if (!isAuthorized) return;
+
     const fetchSubmissions = async () => {
       const { data, error } = await supabase
         .from('submissions')
@@ -23,7 +34,7 @@ const AdminPanel = () => {
     };
 
     fetchSubmissions();
-  }, []);
+  }, [isAuthorized]);
 
   const handleApprove = async (id) => {
     const { error } = await supabase
@@ -38,6 +49,22 @@ const AdminPanel = () => {
       setSubmissions(submissions.filter(submission => submission.id !== id));
     }
   };
+
+  if (!isAuthorized) {
+    return (
+      <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+        <h2>Admin Access</h2>
+        <p>Please enter the password:</p>
+        <input
+          type="password"
+          value={passwordInput}
+          onChange={(e) => setPasswordInput(e.target.value)}
+          placeholder="Password"
+          style={{ padding: '0.5rem', fontSize: '1rem' }}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="admin-panel">
