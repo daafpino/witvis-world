@@ -167,7 +167,8 @@ setImages([...userImages, ...pexelsPhotos]);
     const payload = {
       fileBase64,
       fileName: file.name,
-      username: form.username.value,
+        username: form.username.value, // safe version used for folder/checksum
+  displayName: form.username.value, // added: raw name for display,
       email: form.email.value,
       tags: form.tags.value,
       location: form.location.value,
