@@ -70,22 +70,21 @@ const {
 
   try {
     // Step 1: insert a placeholder row first (no imageUrl yet)
-    const { data: insertData, error: insertError } = await supabase
-      .from("submissions")
-.insert([
-  {
-    username: safeUsername,
-    email,
-    tags: cleanedTags.join(","),
-    location: normalizedLocation,
-    fileName: cleanFileName,
-    checksum,
-    profileUrl // ✅ new field!
-  }
-])
-
-      .select("id")
-      .single();
+const { data: insertData, error: insertError } = await supabase
+  .from("submissions")
+  .insert([
+    {
+      username: safeUsername,
+      email,
+      tags: cleanedTags.join(","),
+      location: normalizedLocation,
+      fileName: cleanFileName,
+      checksum,
+      profileUrl // ✅ this line adds the link to the DB
+    }
+  ])
+  .select("id")
+  .single();
 
     if (insertError) {
       if (insertError.code === "23505") {
