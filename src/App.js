@@ -211,6 +211,9 @@ setImages([...userImages, ...pexelsPhotos]);
         <button className="underline corner-button" onClick={() => setAboutOpen(true)}>about</button>
       </div>
      {/* Bottom Left – Credits */}
+
+     {console.log("🧠 Current image object:", images[currentImageIndex])}
+
 <div className="corner bottom-left">
   {images.length > 0 && (
     <>
